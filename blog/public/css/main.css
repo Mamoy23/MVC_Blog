@@ -1,0 +1,23 @@
+.bootstrap-tagsinput .tag {
+    background-color: rgba(255, 0, 0, 0.63);
+    padding: 2px 5px;
+    border-radius: 5px;
+}
+.bootstrap-tagsinput {
+    display: block !important;
+}
+
+.badge-pill {
+    background-color: rgba(255, 0, 0, 0.63);
+    color: white;
+}
+
+.page-link {
+    border: 0;
+    color: grey;
+}
+.page-item.active .page-link {
+    background-color: rgb(245, 88, 88);
+    color: white;
+    border: 0;
+}
