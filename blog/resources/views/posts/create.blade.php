@@ -14,7 +14,7 @@
                     @endif
 
                 <div class="card-body">
-                    <form action=" {{ route('post.store') }}" method="post" class="form-group">
+                    <form action=" {{ route('billet.store') }}" method="post" class="form-group">
                         @csrf
                         <input type="text" name="title" placeholder="Title" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}">
                         @if ($errors->has('title'))

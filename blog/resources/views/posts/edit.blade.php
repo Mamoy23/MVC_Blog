@@ -14,7 +14,7 @@
                         </div>
                     @endif
                 <div class="card-body">
-                    <form action=" {{ route('post.update', $post->id ) }}" method="post" class="form-group">
+                    <form action=" {{ route('billet.update', $post->id ) }}" method="post" class="form-group">
                         @csrf
                         <input type="text" name="title" placeholder="Title" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" value="{{ $post->title }}">
                         @if ($errors->has('title'))
@@ -46,7 +46,7 @@
 
     @else
     <p class="text-white" style="font-size: 20px;">Sorry, this post doesn't exist.</p>
-    <a href="{{ route('post.list') }}" class="btn btn-light">Go to my posts list<i class="fas fa-arrow-circle-right ml-1"></i></a>
+    <a href="{{ route('billet.list') }}" class="btn btn-light">Go to my posts list<i class="fas fa-arrow-circle-right ml-1"></i></a>
     @endif
 </div>
 @endsection

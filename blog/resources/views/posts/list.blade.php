@@ -9,28 +9,31 @@
                     <p>{{ $message }}</p>
                 </div>
             @endif
-            <a href="{{ route('post.new') }}" class="btn btn-success m-1"><i class="fas fa-plus mr-1"></i>New post</a>
+            <a href="{{ route('billet.new') }}" class="btn btn-success m-1"><i class="fas fa-plus mr-1"></i>New post</a>
+            @if (!empty($posts))
+                @foreach ($posts as $post)
+                <div class="card m-3">
+                    <div class="card-header text-center">{{ $post->title }}</div>
 
-            @foreach ($posts as $post)
-            <div class="card m-3">
-                <div class="card-header text-center">{{ $post->title }}</div>
-
-                <div class="card-body">
-                    <p>{{ $post->content }}</p>
-                    @foreach ( explode(',', $post->tags) as $tag)
-                    <p class="badge badge-pill p-2">#{{ $tag }}</p>
-                    @endforeach
-                    <div class="d-flex float-right">
-                        <a href="{{ route('post.edit', $post->id) }}" class="btn btn-primary m-1"><i class="fas fa-edit"></i></a>
-                        <form action="{{ route('post.destroy', $post->id) }}" class="deleteform" method="post">
-                            @csrf
-                            <input type="hidden" name="_method" value="DELETE" />
-                            <button type="submit" class="btn btn-danger m-1"><i class="fas fa-trash-alt"></i></button>
-                        </form>
+                    <div class="card-body">
+                        <p>{{ $post->content }}</p>
+                        @foreach ( explode(',', $post->tags) as $tag)
+                        <p class="badge badge-pill p-2">#{{ $tag }}</p>
+                        @endforeach
+                        <div class="d-flex float-right">
+                            <a href="{{ route('billet.edit', $post->id) }}" class="btn btn-primary m-1"><i class="fas fa-edit"></i></a>
+                            <form action="{{ route('billet.destroy', $post->id) }}" class="deleteform" method="post">
+                                @csrf
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <button type="submit" class="btn btn-danger m-1"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-            @endforeach
+                @endforeach
+            @else
+            <p class="text-white m-1"><i class="fas fa-arrow-up mr-1"></i>Post for the first time</p>
+            @endif
         </div>
     </div>
 </div>

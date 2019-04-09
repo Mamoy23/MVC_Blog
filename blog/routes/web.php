@@ -20,8 +20,14 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::get('/home', 'Auth\LoginController@login');
 Route::get('/inscription', 'Auth\RegisterController@showRegistrationForm')->name('inscription');
 Route::post('/inscription', 'Auth\RegisterController@register');
-Route::get('post/new', 'PostController@create')->name('post.new');
-Route::get('post/list', 'PostController@list')->name('post.list');
-Route::post('post/{post}', 'PostController@update');
-Route::resource('post', 'PostController');
+Route::get('billet/new', 'PostController@create')->name('billet.new');
+Route::get('billet/list', 'PostController@list')->name('billet.list');
+Route::post('billet/{post}', 'PostController@update');
+Route::resource('billet', 'PostController');
+Route::resource('comment', 'CommentController');
 Auth::routes();
+
+Route::get('admin', 'AdminController@index')->name('admin.index');
+Route::get('admin/users', 'AdminController@users')->name('admin.users');
+Route::get('admin/billets', 'AdminController@posts')->name('admin.posts');
+Route::get('admin/comments', 'AdminController@comments')->name('admin.comments');

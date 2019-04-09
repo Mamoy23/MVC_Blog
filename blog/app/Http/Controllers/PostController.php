@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Post;
+use App\Comment;
+use App\User;
 
 class PostController extends Controller
 {
     public function index()
     {
         $posts = Post::paginate(2);
-        return view('posts.index', compact('posts'));
+
+        return view('posts.index', compact('posts', 'nbrComments'));
     }
 
     public function create()
@@ -31,30 +34,36 @@ class PostController extends Controller
             'title' => strip_tags($request->title),
             'content' => strip_tags($request->content),
             'tags' => strip_tags($request->tags),
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'created' => NOW()
         ]);
         $post->save();
 
-        return redirect()->route('post.list')->with('success', 'Your post is online !');
+        return redirect()->route('billet.list')->with('success', 'Your post is online !');
     }
 
     public function show($id)
     {
-
+        $post = Post::find($id);
+        $comments = Post::find($id)->comments;
+        
+        return view('posts.show', compact('post', 'comments'));
     }
 
     public function list()
     {
         $posts = Post::where('user_id', Auth::id())->get();
-        
+    
         return view('posts.list', compact('posts'));
     }
 
     public function edit($id)
-    {
+    {   
         $post = Post::find($id);
-
+        if($post->user_id === Auth::id())
         return view('posts.edit', compact('post'));
+        else
+        return redirect()->route('billet.list')->with('success', 'Sorry its not your post');
     }
 
     public function update(Request $request, $id)
@@ -66,13 +75,18 @@ class PostController extends Controller
         ]);
 
         $post = Post::find($id);
+        if($post->user_id === Auth::id()){
+            $post->title = $request->title;
+            $post->content = $request->content;
+            $post->tags = $request->tags;
+            $post->updated = NOW();
+            $post->save();
+        }
+        else {
+            return redirect()->route('billet.list')->with('success', 'Sorry its not your post');
+        }
+        return redirect()->route('billet.list')->with('success', 'Post updated !');
 
-        $post->title = $request->title;
-        $post->content = $request->content;
-        $post->tags = $request->tags;
-        $post->save();
-
-        return redirect()->route('post.list')->with('success', 'Post updated !');
     }
 
     public function destroy($id)
@@ -81,6 +95,6 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect()->route('post.list')->with('success', 'Post deleted !');
+        return redirect()->route('billet.list')->with('success', 'Post deleted !');
     }
 }

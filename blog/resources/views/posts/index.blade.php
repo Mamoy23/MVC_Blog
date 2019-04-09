@@ -21,17 +21,27 @@
             @endif
             
             @foreach ($posts as $post)
-                <div class="card m-3">
+            <div class="card m-3">
                 <div class="card-header text-center">{{ $post->title }}</div>
 
-                <div class="card-body">
+                <div class="card-body pb-0">
                     <p>{{ $post->content }}</p>
                     @foreach ( explode(',', $post->tags) as $tag)
                     <p class="badge badge-pill p-2">#{{ $tag }}</p>
                     @endforeach
                 </div>
+
+                @if (count($post->comments) > 0)
+                <div class="text-center">
+                    <p class="badge badge-pill">{{ count($post->comments) }} <i class="fas fa-comment-dots ml-1"></i></p>
+                </div>
+                @endif
+                
+                <div class="text-center">
+                    <a href="{{ route('billet.show', $post->id) }}" class="btn btn-dark mb-1">Add a comment</a>
+                </div>
             </div>
-                @endforeach
+            @endforeach
             <p>{{ $posts->render()}}</p>
         </div>
     </div>
