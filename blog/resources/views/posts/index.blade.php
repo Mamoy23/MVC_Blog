@@ -32,7 +32,7 @@
                 <div class="card-header text-center">{{ $post->title }}</div>
 
                 <div class="card-body pb-0">
-                    <p>{{ $post->content }}</p>
+                    <p>{!! $post->content !!}</p>
                     @foreach ( explode(',', $post->tags) as $tag)
                     <p class="badge badge-pill p-2">#{{ $tag }}</p>
                     @endforeach

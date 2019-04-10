@@ -14,7 +14,7 @@
                 <div class="card-header text-center">{{ $post->title }}</div>
 
                 <div class="card-body">
-                    <p>{{ $post->content }}</p>
+                    <p>{!! $post->content !!}</p>
                     @foreach ( explode(',', $post->tags) as $tag)
                     <p class="badge badge-pill p-2">#{{ $tag }}</p>
                     @endforeach
@@ -33,7 +33,7 @@
                     <form action=" {{ route('comment.store') }}" method="post" class="form-group">
                         @csrf
                         <input type="hidden" name="post_id" value="{{ $post->id }}" />
-                        <textarea name="content" rows="4" placeholder="Type your comment here..." class="form-control col-md-10 offset-md-1{{ $errors->has('content') ? ' is-invalid' : '' }}"></textarea>
+                        <textarea name="content" rows="4" placeholder="Type your comment here..." class="form-control col-md-10 offset-md-1 {{ $errors->has('content') ? ' is-invalid' : '' }}"></textarea>
                         @if ($errors->has('content'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('content') }}</strong>

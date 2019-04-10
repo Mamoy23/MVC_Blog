@@ -16,11 +16,11 @@ class CheckStatus
      */
     public function handle($request, Closure $next)
     {
-        //if(Auth::check()){
+        if(Auth::check()){
             if(Auth::user()->status == 0){
                 return $next($request);
             }
-        //}
+        }
     
         return redirect()->route('home')->with('error', 'You have been ban from Blog, sorry');
     }

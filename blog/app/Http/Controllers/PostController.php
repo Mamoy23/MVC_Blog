@@ -13,6 +13,7 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware('blogger', ['except' => ['index', 'show']]);
+        //$this->middleware('auth', ['except' => 'index']);
     }
 
     public function index()
@@ -31,13 +32,13 @@ class PostController extends Controller
     {
         $this->validate($request, [
             'title' => 'required|max:255',
-            'content' => 'required|max:1000',
+            'content' => 'required',
             'tags' => 'required|max:500'
         ]);
 
         $post = Post::create([
             'title' => strip_tags($request->title),
-            'content' => strip_tags($request->content),
+            'content' => $request->content,
             'tags' => strip_tags($request->tags),
             'user_id' => Auth::id(),
             'created' => NOW()
