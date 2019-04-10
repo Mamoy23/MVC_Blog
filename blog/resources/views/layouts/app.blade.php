@@ -53,6 +53,29 @@
                             </li>
                             @endif
                             @else
+                                @if (Auth::user()->role->name === 'administrator')
+                                <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    Admin <span class="caret"></span>
+                                </a>
+                                
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('admin.index') }}">
+                                        {{ __('Home') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('admin.users') }}">
+                                        {{ __('Users') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('admin.posts') }}">
+                                        {{ __('Posts') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('billet.list') }}">
+                                        {{ __('Comments') }}
+                                    </a>
+                                </div>
+
+                                </li>
+                                @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->username }} <span class="caret"></span>
@@ -68,15 +91,19 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             @csrf
                                     </form>
-                                    <a class="dropdown-item" href="{{ route('billet.index') }}">
-                                        {{ __('Posts') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('billet.list') }}">
-                                        {{ __('My posts') }}
-                                    </a>
-                                    </div>
+                                    @if (Auth::user()->status != 1)
+                                        <a class="dropdown-item" href="{{ route('billet.index') }}">
+                                            {{ __('Posts') }}
+                                        </a>
 
-                                </li>
+                                        @if (Auth::user()->role->name === 'administrator' || Auth::user()->role->name === 'blogger')
+                                        <a class="dropdown-item" href="{{ route('billet.list') }}">
+                                            {{ __('My posts') }}
+                                        </a>
+                                        @endif
+                                        </div>
+                                    @endif
+                            </li>
                                 @endguest
                             </ul>
                         </div>

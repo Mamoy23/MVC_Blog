@@ -10,6 +10,11 @@ use App\User;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('blogger', ['except' => ['index', 'show']]);
+    }
+
     public function index()
     {
         $posts = Post::paginate(2);

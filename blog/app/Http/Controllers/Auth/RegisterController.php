@@ -73,7 +73,8 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'lastname' => $data['lastname'],
             'birthdate' => $data['birthdate'],
-            'role_id' => 3
+            'role_id' => 3, 
+            'status' => 0
         ]);
     }
 }
