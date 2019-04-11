@@ -16,7 +16,7 @@
 
                     @if (Auth::user()->status == 0)
 
-                    <p>You are logged in</p>
+                    <p>Welcome {{ Auth::user()->username }}</p>
 
                     @else 
 

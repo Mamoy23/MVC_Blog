@@ -11,7 +11,7 @@
             @endif
 
             <div class="card m-3">
-                <div class="card-header text-center">{{ $post->title }}</div>
+                <div class="card-header text-center">{!! $post->title !!}</div>
 
                 <div class="card-body">
                     <p>{!! $post->content !!}</p>
@@ -23,7 +23,15 @@
                         <ul class="list-group text-dark col-md-10 offset-md-1 p-0">
                             @foreach ($comments as $comment)
                                 <li class="list-group-item">
-                                    <p><i class="fas fa-quote-left mr-1"></i> {{ $comment->content }} <i class="fas fa-quote-right ml-1"></i></p>
+                                    <p><i class="fas fa-quote-left mr-1"></i> {{ $comment->content }} <i class="fas fa-quote-right ml-1"></i>
+                                    @if ($comment->user_id == Auth::id())
+                                    <form action="{{ route('comment.destroy', $comment->id) }}" class="deleteform m-0 position-absolute" method="post">
+                                        @csrf
+                                        <input type="hidden" name="_method" value="DELETE" />
+                                        <button type="submit" class="btn btn-danger m-1"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                    @endif
+                                    </p>
                                     <p class="text-right m-0"><i class="fas fa-user"></i> {{ $comment->user->username }}</p>
                                     <p class="text-right m-0">Post on {{ date_format($comment->created_at, 'd/m/y g:i A') }}</p>
                                 </li>

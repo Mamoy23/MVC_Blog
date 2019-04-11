@@ -23,7 +23,7 @@
                             </span>
                         @endif
                         
-                        <textarea name="content" cols="30" rows="7" placeholder="Content" class="form-control{{ $errors->has('content') ? ' is-invalid' : '' }}">{{ $post->content }}</textarea>
+                        <textarea name="content" id="editable" cols="30" rows="12" placeholder="Content" class="form-control{{ $errors->has('content') ? ' is-invalid' : '' }}">{{ $post->content }}</textarea>
                         @if ($errors->has('content'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('content') }}</strong>

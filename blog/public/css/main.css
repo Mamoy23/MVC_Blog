@@ -22,3 +22,9 @@
     color: white;
     border: 0;
 }
+.highlight {
+    background-color: #FFFF66
+}
+.btn-link {
+    color: rgb(29, 29, 29);
+}

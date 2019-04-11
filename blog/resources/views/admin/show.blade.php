@@ -3,9 +3,9 @@
 @section('content')
 <div class="container">
     @isset($users)
-    <h1 class="text-danger">Users</h1>
-    <table class="table table-danger table-striped table-borderless">
-        <thead class="bg-danger text-white text-center">
+    <h1 class="text-primary">Users</h1>
+    <table class="table table-primary table-striped table-borderless">
+        <thead class="bg-primary text-white text-center">
             <th>Username</th>
             <th>Role</th>
             <th>Email</th>
@@ -21,10 +21,9 @@
                 <td class="font-weight-bold">
                     <form action="{{ route('admin.role') }}" method="post" class="form-inline">
                         @csrf               
-                        <select name="role" class="custom-select text-danger">
-                            <option value="{{ $user->role_id }}">{{ ucfirst($user->role->name) }}</option>
+                        <select name="role" class="custom-select text-primary">
                             @foreach ($roles as $role)
-                            <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+                            <option value="{{ $role->id }}" {{ $role->id == $user->role_id ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
                             @endforeach
                         </select>
                         <input type="hidden" name="user_id" value="{{ $user->id }}">
@@ -45,7 +44,7 @@
                 </td>
                 @else
                 <td>
-                    <form action="{{ route('admin.deban') }}" method="POST">
+                    <form action="{{ route('admin.deban') }}" method="POST" class="text-center">
                     @csrf
                         <input type="hidden" name="id" value="{{ $user->id }}">
                         <button type="submit" class="btn btn-success" title="Unban"><i class="fas fa-lock-open"></i></button>
@@ -68,6 +67,8 @@
             <th>Tags</th>
             <th>Created</th>
             <th>Post by</th>
+            <th></th>
+            <th></th>
         </thead>
         <tbody>
         @foreach ($posts as $post)
@@ -77,6 +78,16 @@
                 <td>{{ str_replace(',', ', ', $post->tags) }}</td>
                 <td>{{ $post->created }}</td>
                 <td>{{ $post->user->username }}</td>
+                <td>
+                    <a href="{{ route('billet.edit', $post->id) }}" class="btn btn-dark m-1"><i class="fas fa-edit"></i></a>
+                </td>
+                <td>
+                    <form action="{{ route('billet.destroy', $post->id) }}" class="deleteform" method="post">
+                        @csrf
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit" class="btn btn-danger m-1"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </td>
             </tr>
         @endforeach
         </tbody>
@@ -85,12 +96,14 @@
     @endisset
 
     @isset($comments)
-    <h1 class="text-danger">Comments</h1>
-    <table class="table table-danger table-striped table-borderless">
-        <thead class="bg-danger text-white">
+    <h1 class="text-success">Comments</h1>
+    <table class="table table-success table-striped table-borderless">
+        <thead class="bg-success text-white">
             <th>Content</th>
             <th>Post on</th>
             <th>Post by</th>
+            <th></th>
+            <th></th>
         </thead>
         <tbody>
         @foreach ($comments as $comment)
@@ -98,6 +111,16 @@
                 <td>{{ substr($comment->content, 0, 20) }}...</td>
                 <td>{{ $comment->created_at }}</td>
                 <td>{{ $comment->user->username }}</td>
+                <td>
+                    <a href="{{ route('comment.edit', $comment->id) }}" class="btn btn-dark m-1"><i class="fas fa-edit"></i></a>
+                </td>
+                <td>
+                    <form action="{{ route('comment.destroy', $comment->id) }}" class="deleteform" method="post">
+                        @csrf
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit" class="btn btn-danger m-1"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </td>
             </tr>
         @endforeach
         </tbody>
@@ -105,4 +128,18 @@
     {{ $comments->render() }}
     @endisset
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('.deleteform').on('submit', function(){
+            if(confirm('Are you sure you want to delete this post?')){
+                return true;
+            }
+            else{
+                return false;
+            }
+        });
+    });
+</script>
+
 @endsection 

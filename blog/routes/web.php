@@ -11,15 +11,18 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::group(['middleware' => 'checkStatus'], function() {
 
     Route::get('billet/new', 'PostController@create')->name('billet.new');
     Route::get('billet/list', 'PostController@list')->name('billet.list');
     Route::post('billet/{post}', 'PostController@update');
+    Route::get('search', 'PostController@search')->name('billet.search');
+    Route::get('billet/{post}/search', 'PostController@searchPost')->name('billet.search.show');
+    Route::get('contact', 'PostController@contact')->name('contact');
     Route::resource('billet', 'PostController');
     Route::resource('comment', 'CommentController');
     

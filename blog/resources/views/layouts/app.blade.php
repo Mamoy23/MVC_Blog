@@ -79,7 +79,7 @@
                                     <a class="dropdown-item" href="{{ route('admin.posts') }}">
                                         {{ __('Posts') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('billet.list') }}">
+                                    <a class="dropdown-item" href="{{ route('admin.comments') }}">
                                         {{ __('Comments') }}
                                     </a>
                                 </div>
@@ -119,7 +119,15 @@
                         </div>
                     </div>
                 </nav>
-                
+
+                @if (Auth::check())
+                <div class="m-2 d-flex justify-content-center">
+                    <form action="{{ route('billet.search') }}" method="get" class="form-inline">
+                        <input type="text" name="search" placeholder="Search a post" class="form-control" value="{{ $search ?? '' }}">
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </form>
+                </div>
+                @endif
                 <main class="py-4">
                     @yield('content')
                 </main>
