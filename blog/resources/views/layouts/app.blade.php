@@ -20,7 +20,9 @@
         'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
         'save table contextmenu directionality emoticons template paste textcolor'
         ],
-        });</script>
+        });
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -65,37 +67,37 @@
                             @else
                                 @if (Auth::user()->role->name === 'administrator')
                                 <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    Admin <span class="caret"></span>
-                                </a>
-                                
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('admin.index') }}">
-                                        {{ __('Home') }}
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <i class="fas fa-user-cog mr-1"></i>Admin <span class="caret"></span>
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('admin.users') }}">
-                                        {{ __('Users') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('admin.posts') }}">
-                                        {{ __('Posts') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('admin.comments') }}">
-                                        {{ __('Comments') }}
-                                    </a>
-                                </div>
+                                    
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('admin.index') }}">
+                                            {{ __('Home') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('admin.users') }}">
+                                            {{ __('Users') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('admin.posts') }}">
+                                            {{ __('Posts') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('admin.comments') }}">
+                                            {{ __('Comments') }}
+                                        </a>
+                                    </div>
 
                                 </li>
                                 @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->username }} <span class="caret"></span>
+                                    <i class="fas fa-user mr-1"></i>{{ Auth::user()->username }} <span class="caret"></span>
                                 </a>
                                 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        <i class="fas fa-sign-out-alt mr-1"></i>{{ __('Logout') }}
                                     </a>
                                     
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -103,17 +105,41 @@
                                     </form>
                                     @if (Auth::user()->status != 1)
                                         <a class="dropdown-item" href="{{ route('billet.index') }}">
-                                            {{ __('Posts') }}
+                                            <i class="far fa-newspaper mr-1"></i>{{ __('Posts') }}
                                         </a>
-
                                         @if (Auth::user()->role->name === 'administrator' || Auth::user()->role->name === 'blogger')
                                         <a class="dropdown-item" href="{{ route('billet.list') }}">
-                                            {{ __('My posts') }}
+                                            <i class="fas fa-list-ul mr-1"></i>{{ __('My posts') }}
                                         </a>
                                         @endif
+                                        <a class="dropdown-item" href="{{ route('contact.form') }}">
+                                            <i class="fas fa-envelope mr-1"></i>{{ __('Contact') }}
+                                        </a>
                                         </div>
                                     @endif
                             </li>
+                            @if (Auth::user()->status != 1)
+                                <li class="nav-item dropdown">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <i class="fas fa-paper-plane mr-1 text-primary"></i>Chat <span class="caret"></span>
+                                        @if (isset($countAll) && ($countAll != 0))
+                                        <span class="badge badge-pill ml-1" style="font-size: 12px"> {{ $countAll }} </span>
+                                        @endif
+                                    </a>
+                                    
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        @foreach ($chatUsers as $user)
+                                        <a class="dropdown-item" href="{{ route('chat.conv', $user->id) }}">
+                                            {{ $user->username }}
+                                            @if (isset($count[$user->id]) && $count[$user->id] != 0)
+                                                <span class="badge badge-pill m-2" style="font-size: 12px"> {{ $count[$user->id] }} </span>
+                                            @endif
+                                        </a>
+                                        @endforeach
+                                    </div>
+
+                                </li>
+                            @endif
                                 @endguest
                             </ul>
                         </div>
@@ -124,7 +150,7 @@
                 <div class="m-2 d-flex justify-content-center">
                     <form action="{{ route('billet.search') }}" method="get" class="form-inline">
                         <input type="text" name="search" placeholder="Search a post" class="form-control" value="{{ $search ?? '' }}">
-                        <button type="submit" class="btn btn-success">Search</button>
+                        <button type="submit" class="btn btn-outline-success ml-1">Search</button>
                     </form>
                 </div>
                 @endif
@@ -132,7 +158,7 @@
                     @yield('content')
                 </main>
             </div>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            
             <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
         </body>
 </html>

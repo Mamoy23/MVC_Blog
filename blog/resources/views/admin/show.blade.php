@@ -69,15 +69,19 @@
             <th>Post by</th>
             <th></th>
             <th></th>
+            <th></th>
         </thead>
         <tbody>
         @foreach ($posts as $post)
             <tr>
                 <td class="font-weight-bold">{{ $post->title }}</td>
-                <td>{{ substr($post->content, 0, 20) }}...</td>
+                <td>{{ substr($post->content, 0, 20) }}</td>
                 <td>{{ str_replace(',', ', ', $post->tags) }}</td>
                 <td>{{ $post->created }}</td>
                 <td>{{ $post->user->username }}</td>
+                <td>
+                    <a href="{{ route('billet.show', $post->id) }}" class="btn btn-dark m-1"><i class="fas fa-search-plus"></i></a>
+                </td>
                 <td>
                     <a href="{{ route('billet.edit', $post->id) }}" class="btn btn-dark m-1"><i class="fas fa-edit"></i></a>
                 </td>

@@ -28,3 +28,12 @@
 .btn-link {
     color: rgb(29, 29, 29);
 }
+nav, nav li {
+    font-size: 17px;
+}
+.bg-red {
+    background-color: rgba(255, 0, 0, 0.63)
+}
+.red {
+    color :  rgba(255, 0, 0, 0.63)
+}

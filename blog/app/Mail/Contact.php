@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Auth;
 
 class Contact extends Mailable
 {
@@ -30,17 +31,21 @@ class Contact extends Mailable
      */
     public function build()
     {
-        $address = 'janeexampexample@example.com';
-        $subject = 'This is a demo!';
-        $name = 'Jane Doe';
-        
-        return $this->view('emails.contact')
+        $address = $this->data['address'];
+        $subject = $this->data['subject'];
+        $name = $this->data['name'];
+        $message = $this->data['message'];
+        // $user = Auth::user();
+
+        return $this->view('emails.email')
                     ->from($address, $name)
                     ->cc($address, $name)
                     ->bcc($address, $name)
                     ->replyTo($address, $name)
                     ->subject($subject)
-                    ->with([ 'message' => $this->data['message'] ]);
-        //return $this->view('view.name');
+                    ->with([
+                        'text' => $message,
+                        'subject' => $subject
+                    ]);
     }
 }

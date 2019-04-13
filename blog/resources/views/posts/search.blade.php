@@ -27,34 +27,38 @@
             </div>
             @endif
             
-            @foreach ($results as $result)
-            <div class="card m-3">
-                <div class="card-header text-center">
-                    <form action="{{ route('billet.search.show', $result->id) }}" method="get">
-                        <input type="hidden" name="search" value="{{ $search }}">
-                        <button type="submit" class="btn btn-link">{!! $result->title !!}</button>
-                    </form>
-                    <!-- <a href="{{ route('billet.search.show', $result->id) }}">{!! $result->title !!}</a> -->
-                </div>
+            @if (!empty($results->first()))
+                @foreach ($results as $result)
+                <div class="card m-3">
+                    <div class="card-header font-weight-bold text-center">
+                        <form action="{{ route('billet.search.show', $result->id) }}" method="get">
+                            <input type="hidden" name="search" value="{{ $search }}">
+                            <button type="submit" class="btn btn-link" style="font-size: 20px;">{!! $result->title !!}</button>
+                        </form>
+                    </div>
 
-                <div class="card-body pb-0">
-                    <p>{!! substr($result->content, 0, 200) !!}</p>
-                    @foreach ( explode(',', $result->tags) as $tag)
-                    <p class="badge badge-pill p-2">#{{ $tag }}</p>
-                    @endforeach
-                </div>
+                    <p class="position-absolute" style="right: 15px; top: 15px; font-size:15px;"><i class="fas fa-user mr-1"></i>{{ $result->user->username }}</p>
 
-                @if (count($result->comments) > 0)
-                <div class="text-center">
-                    <p class="badge badge-pill">{{ count($result->comments) }} <i class="fas fa-comment-dots ml-1"></i></p>
+                    <div class="card-body p-4">
+                        <p>{!! substr($result->content, 0, 200) !!}</p>
+                        @foreach ( explode(',', $result->tags) as $tag)
+                            <p class="badge badge-pill">#{{ $tag }}</p>
+                        @endforeach
+                    </div>
+
+                    <div class="d-flex justify-content-center align-items-center">
+                            <div class="text-center">
+                                <p class="badge badge-pill m-0 mr-1">{{ count($result->comments) }} <i class="fas fa-comment-dots ml-1"></i></p>
+                            </div>
+                        <div class="text-center">
+                            <a href="{{ route('billet.show', $result->id) }}" class="btn btn-link mb-1"><i class="fas fa-search-plus fa-lg"></i></a>
+                        </div>
+                    </div>
                 </div>
-                @endif
-                
-                <div class="text-center">
-                    <a href="{{ route('billet.show', $result->id) }}" class="btn btn-dark mb-1">Add a comment</a>
-                </div>
-            </div>
-            @endforeach
+                @endforeach
+            @else
+                <p class="text-center text-white">No post found, sorry.</p>
+            @endif
         </div>
     </div>
 </div>

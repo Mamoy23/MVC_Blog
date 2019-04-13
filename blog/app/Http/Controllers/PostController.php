@@ -14,8 +14,7 @@ class PostController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('blogger', ['except' => ['index', 'show', 'contact']]);
-        //$this->middleware('auth', ['except' => 'index']);
+        $this->middleware('blogger', ['except' => ['index', 'show', 'contact', 'contactForm', 'search', 'searchPost']]);
     }
 
     public function index()
@@ -68,10 +67,16 @@ class PostController extends Controller
     public function edit($id)
     {   
         $post = Post::find($id);
-        if($post->user_id === Auth::id() || Auth::user()->role->name === 'administrator')
-        return view('posts.edit', compact('post'));
-        else
-        return redirect()->route('billet.list')->with('success', 'Sorry its not your post');
+        if(!empty($post)){
+            if($post->user_id === Auth::id() || Auth::user()->role->name === 'administrator')
+            return view('posts.edit', compact('post'));
+            else
+            return redirect()->route('billet.list')->with('success', 'Sorry its not your post');
+        }
+        else{
+            return redirect()->route('billet.list')->with('success', 'Sorry no post');
+        }
+
     }
 
     public function update(Request $request, $id)
@@ -83,7 +88,7 @@ class PostController extends Controller
         ]);
 
         $post = Post::find($id);
-        
+
         if($post->user_id === Auth::id() || Auth::user()->role->name === 'administrator'){
             $post->title = $request->title;
             $post->content = $request->content;
@@ -95,7 +100,6 @@ class PostController extends Controller
             return redirect()->route('billet.list')->with('success', 'Sorry its not your post');
         }
         return redirect()->route('billet.list')->with('success', 'Post updated !');
-
     }
 
     public function destroy($id)
@@ -123,35 +127,32 @@ class PostController extends Controller
         $tags = [];
         foreach($posts as $post){
             foreach(explode(',', $post->tags) as $tag){
-                if(levenshtein($search, $tag) <= 3) {
+                if(levenshtein($search, $tag) <= 1) {
                     $tags[] = $tag;
                 }
             }
         }
 
-        // $results = Post::where('title', 'like', '%'.$search.'%')
-        //         ->orWhere('content', 'like', '%'.$search.'%')
-        //         ->get();
-
         $query = Post::query();
         $query->where('title', 'like', '%'.$search.'%')
-            ->orWhere('content', 'like', '%'.$search.'%');
+            ->orWhere('content', 'like', '%'.$search.'%')
+            ->where('content', 'not like','%<img%'.$search.'%/>%')
+            ->where('content', 'not like','%<a%'.$search.'%>%');
             foreach($tags as $tag) {
                 $query->orWhere('tags', 'like', '%'.$tag.'%');
             }
             $results = $query->get();
-
-        foreach($results as &$result){
+        
             
-        $result->title = str_replace($search,"<mark class='highlight p-0'>$search</mark>",$result->title);
-        $result->content = str_replace($search,"<mark class='highlight p-0'>$search</mark>",$result->content);
+        foreach($results as &$result){
+            preg_match_all('~([<][i][m][g].*?[>])~', $result->content, $img, PREG_SET_ORDER);
+                    
+            $result->title = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$result->title);
+            $result->content = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$result->content);
 
-        $result->content = str_replace(strtolower($search),"<mark class='highlight p-0'>$search</mark>",$result->content);
-        $result->title = str_replace(strtolower($search),"<mark class='highlight p-0'>$search</mark>",$result->title);
-
-        $result->content = str_replace(ucfirst($search),"<mark class='highlight p-0'>".strtolower($search)."</mark>",$result->content);
-        $result->title = str_replace(ucfirst($search),"<mark class='highlight p-0'>$search</mark>",$result->title);
-
+            if (!empty($img)){
+                $result->content = str_replace($img[0][0], '', $result->content);
+            }
         }
         return view('posts.search', compact('results', 'search'));
     }
@@ -163,25 +164,41 @@ class PostController extends Controller
         $post = Post::find($id);
         $comments = Post::find($id)->comments;
 
-        $post->title = str_replace($search,"<mark class='highlight p-0'>$search</mark>",$post->title);
-        $post->content = str_replace($search,"<mark class='highlight p-0'>$search</mark>",$post->content);
+        $post->title = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$post->title);
+        $post->content = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$post->content);
 
-        $post->content = str_replace(strtolower($search),"<mark class='highlight p-0'>$search</mark>",$post->content);
-        $post->title = str_replace(strtolower($search),"<mark class='highlight p-0'>$search</mark>",$post->title);
-
-        $post->content = str_replace(ucfirst($search),"<mark class='highlight p-0'>".strtolower($search)."</mark>",$post->content);
-        $post->title = str_replace(ucfirst($search),"<mark class='highlight p-0'>$search</mark>",$post->title);
-        
         return view('posts.show', compact('post', 'comments'));
     }
 
-    public function contact()
+    public function contactForm()
     {
-        $data = ['message' => 'This is a test!'];
-        
-        Mail::to('john@example.com')->send(new Contact($data));
-        // $user = Auth::user();
+        $user = Auth::user();
 
-        // return view('contact', compact('user'));
+        return view('emails.contact', compact('user'));
+    }
+
+    public function contact(Request $request)
+    {
+        $this->validate($request, [
+            'username' => 'required',
+            'useremail' => 'required',
+            'objet' => 'required|max:255',
+            'content' => 'required|max:1000'
+        ]);
+        
+        $data = [
+            'message' => $request->content,
+            'subject' => $request->objet,
+            'address' => $request->useremail,
+            'name' => $request->username
+        ];
+
+        $admins = User::where('role_id', 5)->get();
+
+        foreach ($admins as $admin){
+            Mail::to($admin->email)->send(new Contact($data));
+        }
+
+        return view('emails.contact')->with('success', 'Your message has been sent to administrators');
     }
 }

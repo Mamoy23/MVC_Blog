@@ -22,7 +22,8 @@ Route::group(['middleware' => 'checkStatus'], function() {
     Route::post('billet/{post}', 'PostController@update');
     Route::get('search', 'PostController@search')->name('billet.search');
     Route::get('billet/{post}/search', 'PostController@searchPost')->name('billet.search.show');
-    Route::get('contact', 'PostController@contact')->name('contact');
+    Route::get('contact', 'PostController@contactForm')->name('contact.form');
+    Route::post('contact', 'PostController@contact')->name('contact');
     Route::resource('billet', 'PostController');
     Route::resource('comment', 'CommentController');
     
@@ -33,6 +34,10 @@ Route::group(['middleware' => 'checkStatus'], function() {
     Route::post('admin/ban', 'AdminController@banUser')->name('admin.ban');
     Route::post('admin/deban', 'AdminController@debanUser')->name('admin.deban');
     Route::post('admin/role', 'AdminController@updateUserRole')->name('admin.role');
+
+    Route::get('chat/{user}', 'ChatController@show')->name('chat.conv');
+    Route::post('chat/{user}', 'ChatController@store')->name('chat.conv');
+    Route::resource('chat', 'ChatController');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

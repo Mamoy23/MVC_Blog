@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-12">
             @if ($message = Session::get('success'))
                 <div class="alert alert-success" role="alert">
                     <p>{{ $message }}</p>
@@ -13,7 +13,7 @@
             @if (!empty($posts))
                 @foreach ($posts as $post)
                 <div class="card m-3">
-                    <div class="card-header text-center">{{ $post->title }}</div>
+                    <div class="card-header text-center font-weight-bold" style="font-size: 20px;">{{ $post->title }}</div>
 
                     <div class="card-body">
                         <p>{!! $post->content !!}</p>
@@ -21,7 +21,7 @@
                         <p class="badge badge-pill p-2">#{{ $tag }}</p>
                         @endforeach
                         <div class="d-flex float-right">
-                            <a href="{{ route('billet.edit', $post->id) }}" class="btn btn-primary m-1"><i class="fas fa-edit"></i></a>
+                            <a href="{{ route('billet.edit', $post->id) }}" class="btn btn-dark m-1"><i class="fas fa-edit"></i></a>
                             <form action="{{ route('billet.destroy', $post->id) }}" class="deleteform" method="post">
                                 @csrf
                                 <input type="hidden" name="_method" value="DELETE" />
