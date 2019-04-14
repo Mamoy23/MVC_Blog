@@ -32,7 +32,7 @@
                 </div>
                 @endforeach
             @else
-            <p class="text-white m-1"><i class="fas fa-arrow-up mr-1"></i>Post for the first time</p>
+                <p class="text-white m-1"><i class="fas fa-arrow-up mr-1"></i>Post for the first time</p>
             @endif
         </div>
     </div>

@@ -41,7 +41,6 @@ Route::group(['middleware' => 'checkStatus'], function() {
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
-// Route::get('/home', 'Auth\LoginController@login');
 Route::get('/inscription', 'Auth\RegisterController@showRegistrationForm')->name('inscription');
 Route::post('/inscription', 'Auth\RegisterController@register');
 Auth::routes();

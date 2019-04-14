@@ -35,7 +35,6 @@ class Contact extends Mailable
         $subject = $this->data['subject'];
         $name = $this->data['name'];
         $message = $this->data['message'];
-        // $user = Auth::user();
 
         return $this->view('emails.email')
                     ->from($address, $name)

@@ -106,7 +106,7 @@ class PostController extends Controller
     {
         $post = Post::find($id);
 
-        if($post->user_id === Auth::id() || Auth::user()->role->name == 'administrator'){
+        if($post->user_id === Auth::id() || Auth::user()->role->name === 'administrator'){
             $post->delete();
         }
         else {
@@ -146,13 +146,21 @@ class PostController extends Controller
             
         foreach($results as &$result){
             preg_match_all('~([<][i][m][g].*?[>])~', $result->content, $img, PREG_SET_ORDER);
-                    
-            $result->title = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$result->title);
-            $result->content = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$result->content);
+            preg_match_all('~([<][a].*?[>])~', $result->content, $link, PREG_SET_ORDER);
+            preg_match_all('~([<][i][f][r][a][m][e].*?[>])~', $result->content, $iframe, PREG_SET_ORDER);
 
             if (!empty($img)){
                 $result->content = str_replace($img[0][0], '', $result->content);
             }
+            if (!empty($link)){
+                $result->content = str_replace($link[0][0], '', $result->content);
+            }
+            if (!empty($iframe)){
+                $result->content = str_replace($iframe[0][0], '', $result->content);
+            }
+            
+            $result->title = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$result->title);
+            $result->content = str_ireplace($search,"<mark class='highlight p-0'>$search</mark>",$result->content);
         }
         return view('posts.search', compact('results', 'search'));
     }
